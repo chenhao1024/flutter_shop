@@ -8,8 +8,8 @@ class MyApp extends StatelessWidget {
     // TODO: implement build
     return Container(
       child: MaterialApp(
-        title: '百姓生活+',
-        debugShowCheckedModeBanner: false,
+        title: '百姓生活+ddd',
+        // debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: Colors.pink
         ),
