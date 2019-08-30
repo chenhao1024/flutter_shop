@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
+import '../config/httpHeader.dart';
 
 
 
@@ -32,25 +33,16 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   TextEditingController typeController = TextEditingController();
 
-  String showText = '欢迎来到天上人间';
+  String showText = '还没有请求数据';
 
   @override 
   Widget build(BuildContext context){
     return Container(
-      child: Scaffold(appBar: AppBar(title: Text('天上人间'),),
+      child: Scaffold(appBar: AppBar(title: Text('请求远程数据'),),
       body: Container(height: 1000,
       child: Column(children: <Widget>[
-        TextField(
-          controller: typeController,
-          decoration: InputDecoration(
-            contentPadding: EdgeInsets.all(10),
-            labelText: '美女类型',
-            helperText: '请输入你喜欢的类型'
-          ),
-          autofocus: false,
-        ),
         RaisedButton(onPressed: _choiceAction,
-        child: Text('选择完毕'),),
+        child: Text('请求数据'),),
         Text(
           showText,
           overflow:TextOverflow.ellipsis,
@@ -61,14 +53,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future getHttp(String TypeText) async{
+  Future getHttp() async{
     try{
       Response response;
-      var data = {'name': TypeText};
-      response = await Dio().post(
-        "https://www.easy-mock.com/mock/5d68d8206bae0f5e52f6429d/example/getGirls",
-        queryParameters: data
+
+      Dio dio = new Dio();
+      dio.options.headers = httpHeaders;
+      response = await dio.post(
+        "https://time.geekbang.org/serv/v1/column/newAll"
       );
+      print(response);
       return response.data;
     }catch(e){
       return print(e);
@@ -76,19 +70,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _choiceAction(){
-    print('...');
-    if (typeController.text.toString() == ''){
-      showDialog(
-        context: context,
-        builder: (context)=>AlertDialog(title: Text('类型不能为空'),)
-      );
-    }else{
-      getHttp(typeController.text.toString()).then((val){
+    print('开始向极客时间请求数据..................');
+      getHttp().then((val){
         print(val);
         setState((){
-          showText = val['data']['name'].toString();
+          showText = val['data'].toString();
         });
       });
-    }
   }
 }
