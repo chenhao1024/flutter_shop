@@ -10,6 +10,8 @@ class IndexPage extends StatefulWidget {
 }
 
 class _IndexPageState extends State<IndexPage> {
+
+  PageController _pageController;
   final List<BottomNavigationBarItem> bottomTabs = [
     BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), title: Text('首页')),
     BottomNavigationBarItem(
@@ -20,7 +22,7 @@ class _IndexPageState extends State<IndexPage> {
         icon: Icon(CupertinoIcons.profile_circled), title: Text('会员中心')),
   ];
 
-  final List tabBodies = [HomePage(), CategoryPage(), CartPage(), MemberPage()];
+  final List<Widget> tabBodies = [HomePage(), CategoryPage(), CartPage(), MemberPage()];
 
   int currentIndex = 0;
   var currentPage;
@@ -28,6 +30,13 @@ class _IndexPageState extends State<IndexPage> {
   @override
   void initState() {
     currentPage = tabBodies[currentIndex];
+    _pageController = new PageController()..addListener((){
+      if (currentPage != _pageController.page.round()){
+        setState(() {
+          currentPage = _pageController.page.round();
+        });
+      }
+    });
     super.initState();
   }
 
@@ -46,7 +55,10 @@ class _IndexPageState extends State<IndexPage> {
              currentPage = tabBodies[currentIndex]; 
             });
           },),
-          body: currentPage,
+          body: IndexedStack(
+            index: currentIndex,
+            children: tabBodies,
+          ),
     );
   }
 }
